@@ -1,6 +1,5 @@
 import { Item } from "@/types/item";
 import Image from "next/image";
-import { isObject } from "node:util";
 
 interface ItemTooltipProps {
   item: Item;
@@ -93,7 +92,7 @@ export default function ItemTooltip({ item, onClick }: ItemTooltipProps) {
       <span>{item.bonding}</span>
       <div className="flex flex-row justify-between">
         <span>
-          {isObject(item.class)
+          {typeof item.class !== "string"
             ? "Custom"
             : (item.class as string) === "Weapon"
               ? strWithDefault(item.hands, item.class as string)
