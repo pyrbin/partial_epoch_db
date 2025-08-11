@@ -194,8 +194,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto font-mono">
           <h1 className="text-3xl font-bold text-center flex items-center justify-center gap-2">
             PARTIAL
-            <Image src="/full-logo.webp" alt="Logo" width={200} height={32} />-
-            DB
+            <Image
+              src="https://www.project-epoch.net/img/global/full-logo.webp"
+              alt="Logo"
+              width={200}
+              height={32}
+            />
+            - DB
             <p className="text-center text-tooltip-requirement tracking-wide text-sm font-mono italic">
               Build 3466
             </p>
@@ -206,9 +211,9 @@ export default function Home() {
               <span className="text-tooltip-requirement italic">*NEW*</span>{" "}
               items
             </p>
-            <span>|</span>
-            <p className="text-center text-green-400 mt-2 font-mono">
-              fetched from .dbc files & beta 3.5
+            <span>-</span>
+            <p className="text-center text-green-400 mt-2 font-mono relative">
+              from .dbc files & beta 3.5
             </p>
             <Image src="/peon.webp" alt="Logo" width={32} height={32} />
           </div>
