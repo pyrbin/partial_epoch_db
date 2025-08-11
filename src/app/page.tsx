@@ -1,103 +1,218 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import MiniSearch from "minisearch";
+import { Item, SearchFilters } from "@/types/item";
+import SearchBar from "@/components/SearchBar";
+import FilterBar from "@/components/FilterBar";
+import VirtualizedItemGrid from "@/components/VirtualizedItemGrid";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [items, setItems] = useState<Item[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState<SearchFilters>({});
+  const [miniSearch, setMiniSearch] = useState<MiniSearch | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Load data and initialize search
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Load items data
+        const itemsResponse = await fetch("/data.json");
+        const itemsData: Item[] = await itemsResponse.json();
+        setItems(itemsData);
+
+        // @ts-expect-error -- override global
+        window.__EPOCH_DB = itemsData;
+
+        // Initialize MiniSearch - let's create it from the items data instead
+        const ms = new MiniSearch({
+          fields: [
+            "id",
+            "name",
+            "class",
+            "subclass",
+            "inventory_icon",
+            "inventory_type",
+            "set",
+            "required_level",
+            "stats",
+            "spells",
+            "requires",
+            "rarity",
+            "damage",
+            "added_damage",
+            "armor",
+            "speed",
+            "dps",
+            "bonding",
+            "hands",
+          ],
+          storeFields: ["id"],
+        });
+
+        // Add documents to the search index
+        const searchableItems = itemsData.map((item) => ({
+          id: item.id,
+          name: item.name,
+          class: typeof item.class === "string" ? item.class : "Custom",
+          subclass: item.subclass,
+          rarity: item.rarity,
+          inventory_type: item.inventory_type,
+          required_level: item.required_level,
+          set: item.set,
+        }));
+
+        ms.addAll(searchableItems);
+        setMiniSearch(ms);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Filter and search items
+  const filteredItems = useMemo(() => {
+    // Don't process if items haven't loaded yet
+    if (items.length === 0) {
+      return [];
+    }
+
+    let results = items;
+
+    // Check if any filters or search are active
+    const hasActiveSearch = searchQuery.trim() !== "";
+    const hasActiveFilters = Object.values(filters).some(
+      (value) => value !== undefined && value !== "",
+    );
+
+    // If no search or filters, show all items
+    if (!hasActiveSearch && !hasActiveFilters) {
+      return items;
+    }
+
+    // Apply text search
+    if (hasActiveSearch && miniSearch) {
+      const searchResults = miniSearch.search(searchQuery, {
+        fuzzy: 0.2,
+        prefix: true,
+        boost: { name: 2 },
+      });
+      const searchIds = new Set(searchResults.map((r) => r.id));
+      results = results.filter((item) => searchIds.has(item.id));
+    }
+
+    // Apply filters
+    if (filters.class) {
+      results = results.filter((item) => {
+        const itemClass =
+          typeof item.class === "string" ? item.class : "Custom";
+        return itemClass === filters.class;
+      });
+    }
+
+    if (filters.subclass) {
+      results = results.filter((item) => item.subclass === filters.subclass);
+    }
+
+    if (filters.rarity) {
+      results = results.filter((item) => item.rarity === filters.rarity);
+    }
+
+    if (filters.inventory_type) {
+      results = results.filter(
+        (item) => item.inventory_type === filters.inventory_type,
+      );
+    }
+
+    if (filters.required_level_min !== undefined) {
+      results = results.filter(
+        (item) => item.required_level >= filters.required_level_min!,
+      );
+    }
+
+    if (filters.required_level_max !== undefined) {
+      results = results.filter(
+        (item) => item.required_level <= filters.required_level_max!,
+      );
+    }
+
+    if (filters.has_set) {
+      results = results.filter((item) => item.set !== null);
+    }
+
+    if (filters.has_name) {
+      results = results.filter((item) => item.name !== "<unknown>");
+    }
+
+    if (filters.has_icon) {
+      results = results.filter(
+        (item) => item.inventory_icon && item.inventory_icon.trim() !== "",
+      );
+    }
+
+    if (filters.has_spells) {
+      results = results.filter(
+        (item) => item.spells !== null && item.spells.length > 0,
+      );
+    }
+
+    return results;
+  }, [items, searchQuery, filters, miniSearch]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading items database...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header/Banner */}
+      <header className=" text-main p-6 shadow-lg">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-center flex items-center justify-center gap-2">
+            partial
+            <Image src="/full-logo.webp" alt="Logo" width={200} height={32} />
+            -db
+            <p className="text-center text-tooltip-requirement text-sm">
+              Build 3466
+            </p>
+          </h1>
+          <div className="flex flex-row items-center justify-center gap-3">
+            <p className="text-center text-blue-100 mt-2">
+              ⚔️ {items.length.toLocaleString()} items
+            </p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </header>
+
+      {/* Search and Filter Section */}
+      <div className="max-w-7xl mx-auto p-4 space-y-4">
+        <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+
+        <FilterBar
+          items={items}
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
+      </div>
+
+      {/* Results Grid */}
+      <div className="mx-auto p-4">
+        <div className="max-w-7xl  mx-auto not-target:mb-4 text-sm text-gray-400 text-center">
+          Showing {filteredItems.length.toLocaleString()} items
+        </div>
+        <VirtualizedItemGrid items={filteredItems} />
+      </div>
     </div>
   );
 }
