@@ -12,7 +12,10 @@ import { getApiPath, getAssetPath } from "@/utils/paths";
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState<SearchFilters>({});
+  const [filters, setFilters] = useState<SearchFilters>({
+    has_icon: true,
+    has_name: true,
+  });
   const [miniSearch, setMiniSearch] = useState<MiniSearch | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -158,11 +161,11 @@ export default function Home() {
       results = results.filter((item) => item.set !== null);
     }
 
-    if (filters.has_name) {
+    if (filters.has_name === true) {
       results = results.filter((item) => item.name !== "<unknown>");
     }
 
-    if (filters.has_icon) {
+    if (filters.has_icon === true) {
       results = results.filter(
         (item) => item.inventory_icon && item.inventory_icon.trim() !== "",
       );

@@ -156,7 +156,10 @@ export default function FilterBar({
   };
 
   const clearAllFilters = () => {
-    onFiltersChange({});
+    onFiltersChange({
+      has_icon: true,
+      has_name: true,
+    });
   };
 
   const hasActiveFilters = Object.values(filters).some(
@@ -242,11 +245,11 @@ export default function FilterBar({
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                checked={filters.has_name ?? false}
+                checked={filters.has_name === true}
                 onChange={(e) =>
                   handleFilterChange(
                     "has_name",
-                    e.target.checked ? true : undefined,
+                    e.target.checked ? true : false,
                   )
                 }
                 className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
@@ -259,11 +262,11 @@ export default function FilterBar({
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                checked={filters.has_icon ?? false}
+                checked={filters.has_icon === true}
                 onChange={(e) =>
                   handleFilterChange(
                     "has_icon",
-                    e.target.checked ? true : undefined,
+                    e.target.checked ? true : false,
                   )
                 }
                 className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
