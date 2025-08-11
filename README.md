@@ -2,7 +2,7 @@
 
 Provides partial & very in-complete item data for the server Project Epoch @ `build 3466`
 
-Data was fetched from `.dbc` files in provided custom `.MPQ's` by using [wow_dbc](https://docs.rs/wow_dbc/latest/wow_dbc/) in [/dbc_parser](https://github.com/your_username/dbc_parser). Furthermore some names, stats etc. that does not exist in `.dbc` was matched and taken from previous beta infos.
+Data was fetched from `.dbc` files in provided custom `.MPQ's` by using [wow_dbc](https://docs.rs/wow_dbc/latest/wow_dbc/) in [/dbc_parser](https://github.com/pyrbin/partial_epoch_db/tree/main/dbc_parser). Furthermore some names, stats etc. that does not exist in `.dbc` was matched and taken from previous beta infos.
 
 Was made during a Sunday for fun, won't be updated anymore :)
 
