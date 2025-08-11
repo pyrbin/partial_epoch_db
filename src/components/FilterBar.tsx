@@ -140,21 +140,20 @@ export default function FilterBar({
     });
   };
 
-  // TODO: removed level filter for now, as we dont have that data so...
-  // const _handleLevelChange = (type: "min" | "max", value: string) => {
-  //   const numValue = value === "" ? undefined : parseInt(value, 10);
-  //   if (type === "min") {
-  //     onFiltersChange({
-  //       ...filters,
-  //       required_level_min: numValue,
-  //     });
-  //   } else {
-  //     onFiltersChange({
-  //       ...filters,
-  //       required_level_max: numValue,
-  //     });
-  //   }
-  // };
+  const handleLevelChange = (type: "min" | "max", value: string) => {
+    const numValue = value === "" ? undefined : parseInt(value, 10);
+    if (type === "min") {
+      onFiltersChange({
+        ...filters,
+        required_level_min: numValue,
+      });
+    } else {
+      onFiltersChange({
+        ...filters,
+        required_level_max: numValue,
+      });
+    }
+  };
 
   const clearAllFilters = () => {
     onFiltersChange({});
@@ -167,110 +166,140 @@ export default function FilterBar({
   return (
     <div className="space-y-4">
       {/* Filter Dropdowns */}
-      <div className="flex flex-wrap gap-3">
-        <FilterDropdown
-          label="Class"
-          value={filters.class}
-          options={filterOptions.classes}
-          onChange={(value) => handleFilterChange("class", value)}
-        />
-
-        <FilterDropdown
-          label="Subclass"
-          value={filters.subclass}
-          options={filterOptions.subclasses}
-          onChange={(value) => handleFilterChange("subclass", value)}
-        />
-
-        <FilterDropdown
-          label="Rarity"
-          value={filters.rarity}
-          options={filterOptions.rarities}
-          onChange={(value) => handleFilterChange("rarity", value)}
-        />
-
-        <FilterDropdown
-          label="Slot"
-          value={filters.inventory_type}
-          options={filterOptions.inventoryTypes}
-          onChange={(value) => handleFilterChange("inventory_type", value)}
-        />
-
-        {/* Toggle Filters */}
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
+      <div className="flex flex-wrap gap-2 flex-col">
+        <div className="flex flex-wrap gap-2 flex-row">
+          {/* Level Range Filters */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-300">Level:</span>
             <input
-              type="checkbox"
-              checked={filters.has_set ?? false}
-              onChange={(e) =>
-                handleFilterChange(
-                  "has_set",
-                  e.target.checked ? true : undefined,
-                )
-              }
-              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              type="number"
+              placeholder="Min"
+              value={filters.required_level_min ?? ""}
+              onChange={(e) => handleLevelChange("min", e.target.value)}
+              className="w-16 px-2 py-1 text-sm bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+              min="1"
+              max="80"
             />
-            <span className="text-sm font-medium text-gray-300">Has Set</span>
-          </label>
+            <span className="text-gray-400">-</span>
+            <input
+              type="number"
+              placeholder="Max"
+              value={filters.required_level_max ?? ""}
+              onChange={(e) => handleLevelChange("max", e.target.value)}
+              className="w-16 px-2 py-1 text-sm bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+              min="1"
+              max="80"
+            />
+          </div>
 
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={filters.has_name ?? false}
-              onChange={(e) =>
-                handleFilterChange(
-                  "has_name",
-                  e.target.checked ? true : undefined,
-                )
-              }
-              className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
-            />
-            <span className="cursor-pointer text-sm font-medium text-gray-300">
-              Has Name
-            </span>
-          </label>
+          <FilterDropdown
+            label="Class"
+            value={filters.class}
+            options={filterOptions.classes}
+            onChange={(value) => handleFilterChange("class", value)}
+          />
 
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={filters.has_icon ?? false}
-              onChange={(e) =>
-                handleFilterChange(
-                  "has_icon",
-                  e.target.checked ? true : undefined,
-                )
-              }
-              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
-            />
-            <span className="text-sm font-medium text-gray-300">Has Icon</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={filters.has_spells ?? false}
-              onChange={(e) =>
-                handleFilterChange(
-                  "has_spells",
-                  e.target.checked ? true : undefined,
-                )
-              }
-              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
-            />
-            <span className="text-sm font-medium text-gray-300">
-              Has Spells
-            </span>
-          </label>
+          <FilterDropdown
+            label="Subclass"
+            value={filters.subclass}
+            options={filterOptions.subclasses}
+            onChange={(value) => handleFilterChange("subclass", value)}
+          />
+
+          <FilterDropdown
+            label="Rarity"
+            value={filters.rarity}
+            options={filterOptions.rarities}
+            onChange={(value) => handleFilterChange("rarity", value)}
+          />
+
+          <FilterDropdown
+            label="Slot"
+            value={filters.inventory_type}
+            options={filterOptions.inventoryTypes}
+            onChange={(value) => handleFilterChange("inventory_type", value)}
+          />
         </div>
 
-        {/* Clear Filters Button */}
-        {hasActiveFilters && (
-          <button
-            onClick={clearAllFilters}
-            className="px-3 py-1 cursor-pointer text-base font-bold text-red-400 hover:text-red-300 underline focus:outline-none"
-          >
-            ❌ Clear all filters
-          </button>
-        )}
+        <div className="flex flex-wrap gap-2 flex-row h-[50px]">
+          {/* Toggle Filters */}
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={filters.has_set ?? false}
+                onChange={(e) =>
+                  handleFilterChange(
+                    "has_set",
+                    e.target.checked ? true : undefined,
+                  )
+                }
+                className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <span className="text-sm font-medium text-gray-300">Has Set</span>
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={filters.has_name ?? false}
+                onChange={(e) =>
+                  handleFilterChange(
+                    "has_name",
+                    e.target.checked ? true : undefined,
+                  )
+                }
+                className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <span className="cursor-pointer text-sm font-medium text-gray-300">
+                Has Name
+              </span>
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={filters.has_icon ?? false}
+                onChange={(e) =>
+                  handleFilterChange(
+                    "has_icon",
+                    e.target.checked ? true : undefined,
+                  )
+                }
+                className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <span className="text-sm font-medium text-gray-300">
+                Has Icon
+              </span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={filters.has_spells ?? false}
+                onChange={(e) =>
+                  handleFilterChange(
+                    "has_spells",
+                    e.target.checked ? true : undefined,
+                  )
+                }
+                className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <span className="text-sm font-medium text-gray-300">
+                Has Spells
+              </span>
+            </label>
+          </div>
+
+          {/* Clear Filters Button */}
+          {hasActiveFilters && (
+            <button
+              onClick={clearAllFilters}
+              className="px-3 py-1 cursor-pointer text-base font-bold text-red-400 hover:text-red-300 underline focus:outline-none"
+            >
+              ❌ Clear all filters
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
