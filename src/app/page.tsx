@@ -32,25 +32,35 @@ export default function Home() {
           fields: [
             "id",
             "name",
-            "class",
-            "subclass",
-            "inventory_icon",
             "inventory_type",
             "set",
+            "set.name",
+            "*(set.spells)",
             "required_level",
-            "stats",
-            "spells",
-            "requires",
-            "rarity",
-            "damage",
-            "added_damage",
-            "armor",
-            "speed",
-            "dps",
-            "bonding",
+            "*(stats)",
+            "*(spells)",
+            "*(requires)",
             "hands",
           ],
           storeFields: ["id"],
+          extractField: (document, fieldName) => {
+            if (fieldName.startsWith("*(") && fieldName.endsWith(")")) {
+              const field = fieldName.slice(2, -1).split(".");
+              const value = field.reduce(
+                (doc, key) => doc && doc[key],
+                document,
+              );
+              if (Array.isArray(value)) {
+                const t = JSON.stringify(value);
+                console.log(t);
+                return t;
+              }
+            }
+
+            return fieldName
+              .split(".")
+              .reduce((doc, key) => doc && doc[key], document);
+          },
         });
 
         // Add documents to the search index
@@ -168,8 +178,11 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading items database...</div>
+      <div className="min-h-screen flex items-center font-mono justify-center">
+        <div className="text-lg flex flex-row gap-2">
+          <span>Loading items database... </span>
+          <Image src="/peon.webp" alt="Logo" width={32} height={32} />
+        </div>
       </div>
     );
   }
@@ -178,27 +191,36 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header/Banner */}
       <header className=" text-main p-6 shadow-lg">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto font-mono">
           <h1 className="text-3xl font-bold text-center flex items-center justify-center gap-2">
-            partial
-            <Image src="/full-logo.webp" alt="Logo" width={200} height={32} />
-            -db
-            <p className="text-center text-tooltip-requirement text-sm">
+            PARTIAL
+            <Image src="/full-logo.webp" alt="Logo" width={200} height={32} />-
+            DB
+            <p className="text-center text-tooltip-requirement tracking-wide text-sm font-mono italic">
               Build 3466
             </p>
           </h1>
           <div className="flex flex-row items-center justify-center gap-3">
-            <p className="text-center text-blue-100 mt-2">
-              ⚔️ {items.length.toLocaleString()} items
+            <p className="text-center text-blue-100 mt-2 font-mono">
+              tot. {items.length.toLocaleString()}{" "}
+              <span className="text-tooltip-requirement italic">*NEW*</span>{" "}
+              items
             </p>
+            <span>|</span>
+            <p className="text-center text-green-400 mt-2 font-mono">
+              fetched from .dbc files & beta 3.5
+            </p>
+            <Image src="/peon.webp" alt="Logo" width={32} height={32} />
           </div>
         </div>
+        <span className="text-center text-xs flex items-center justify-center text-gray-500 mt-2 font-mono">
+          not officially affiliated with Project Epoch.
+        </span>
       </header>
 
       {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto p-4 space-y-4">
+      <div className="max-w-7xl mx-auto p-4 space-y-2">
         <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-
         <FilterBar
           items={items}
           filters={filters}
@@ -208,7 +230,7 @@ export default function Home() {
 
       {/* Results Grid */}
       <div className="mx-auto p-4">
-        <div className="max-w-7xl  mx-auto not-target:mb-4 text-sm text-gray-400 text-center">
+        <div className="max-w-7xl font-mono mx-auto not-target:mb-4 text-sm text-gray-400 text-center">
           Showing {filteredItems.length.toLocaleString()} items
         </div>
         <VirtualizedItemGrid items={filteredItems} />

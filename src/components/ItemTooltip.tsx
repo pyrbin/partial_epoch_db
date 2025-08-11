@@ -55,9 +55,16 @@ export default function ItemTooltip({ item, onClick }: ItemTooltipProps) {
       break;
   }
 
+  const highlightSpellVars = (text: string, spanClassName: string) => {
+    return text.replace(
+      /\$(\w+)(%)?/g,
+      `<span class="${spanClassName}">\$$1$2</span>`,
+    );
+  };
+
   return (
     <div
-      className={`${rarity_border} font-wow border-1 p-4 text-sm rounded-lg border-gray-500 w-[350px] h-[400px] overflow-auto flex flex-col`}
+      className={`${rarity_border} font-wow border-1 p-4 text-sm rounded-lg border-gray-500 w-[350px] h-[420px] overflow-auto flex flex-col`}
       onClick={handleClick}
       style={{
         scrollbarWidth: "none", // Firefox
@@ -118,18 +125,33 @@ export default function ItemTooltip({ item, onClick }: ItemTooltipProps) {
         ))}
       </span>
       <span className="flex flex-col text-tooltip-spell mt-1">
-        {item.spells.map((s) => (
-          <span key={s}>{s}</span>
-        ))}
+        {item.spells.map((spell) => {
+          const modifiedSpell = highlightSpellVars(spell, "text-teal-300");
+          return (
+            <span
+              className="mt-0.5 hover:underline"
+              key={spell}
+              dangerouslySetInnerHTML={{
+                __html: `${modifiedSpell}`,
+              }}
+            />
+          );
+        })}
       </span>
       <span className="flex flex-col mt-1">
         <span className="text-tooltip-set mb-0.25">{item.set?.name}</span>
-        {item.set?.spells.map((spell) => (
-          <span
-            className="text-tooltip-muted mt-0.25"
-            key={spell[0]}
-          >{`(${spell[0]}) Set: ${spell[1]}`}</span>
-        ))}
+        {item.set?.spells.map((spell) => {
+          const modifiedSpell = highlightSpellVars(spell[1], "text-teal-300");
+          return (
+            <span
+              className="text-tooltip-muted mt-0.5 hover:underline"
+              key={spell[0]}
+              dangerouslySetInnerHTML={{
+                __html: `(${spell[0]}) Set: ${modifiedSpell}`,
+              }}
+            />
+          );
+        })}
       </span>
     </div>
   );

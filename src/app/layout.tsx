@@ -8,8 +8,14 @@ const merriweather = Merriweather_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "partial epoch db",
-  description: "provides partial & incomplete epoch item data",
+  title: "PARTIAL PROJECT EPOCH DB",
+  description:
+    "provides partial & very in-complete epoch item data for build 3466",
+  icons: {
+    icon: "/peon.webp",
+    shortcut: "/peon.webp",
+    apple: "/peon.webp",
+  },
 };
 
 export default function RootLayout({

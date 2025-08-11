@@ -56,7 +56,7 @@ export default function VirtualizedItemGrid({
     height: 900,
     columnCount: 5,
     itemWidth: 350,
-    itemHeight: 400 + 16, // 350px + 16px padding
+    itemHeight: 420 + 16, // 350px + 16px padding
   });
 
   // Calculate grid dimensions based on screen size
@@ -64,7 +64,7 @@ export default function VirtualizedItemGrid({
     const maxContainerWidth = 5 * 350; // Max 5 items wide (350px each)
     const availableWidth = window.innerWidth - 64; // Screen width minus padding
     const itemWidth = 350; // Fixed width for 350px tooltips
-    const itemHeight = 400 + 16; // Fixed height for 350px tooltips + 16px padding
+    const itemHeight = 420 + 16; // Fixed height for 350px tooltips + 16px padding
 
     // Calculate how many columns we can fit, max 5
     let columnCount = Math.floor(availableWidth / itemWidth);
@@ -147,6 +147,9 @@ export default function VirtualizedItemGrid({
           rowHeight={() => dimensions.itemHeight}
           width={dimensions.width}
           itemData={gridData}
+          style={{
+            overflowX: "hidden",
+          }}
         >
           {Cell}
         </Grid>

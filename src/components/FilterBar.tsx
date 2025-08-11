@@ -134,20 +134,21 @@ export default function FilterBar({
     });
   };
 
-  const handleLevelChange = (type: "min" | "max", value: string) => {
-    const numValue = value === "" ? undefined : parseInt(value, 10);
-    if (type === "min") {
-      onFiltersChange({
-        ...filters,
-        required_level_min: numValue,
-      });
-    } else {
-      onFiltersChange({
-        ...filters,
-        required_level_max: numValue,
-      });
-    }
-  };
+  // TODO: removed level filter for now, as we dont have that data so...
+  // const _handleLevelChange = (type: "min" | "max", value: string) => {
+  //   const numValue = value === "" ? undefined : parseInt(value, 10);
+  //   if (type === "min") {
+  //     onFiltersChange({
+  //       ...filters,
+  //       required_level_min: numValue,
+  //     });
+  //   } else {
+  //     onFiltersChange({
+  //       ...filters,
+  //       required_level_max: numValue,
+  //     });
+  //   }
+  // };
 
   const clearAllFilters = () => {
     onFiltersChange({});

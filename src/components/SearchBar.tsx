@@ -9,7 +9,7 @@ interface SearchBarProps {
 export default function SearchBar({
   searchQuery,
   onSearchChange,
-  placeholder = "Search ...",
+  placeholder = "Search ... (it's a bit broken, but kinda works)",
 }: SearchBarProps) {
   const [localQuery, setLocalQuery] = useState(searchQuery);
 
