@@ -7,6 +7,7 @@ import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import VirtualizedItemGrid from "@/components/VirtualizedItemGrid";
 import Image from "next/image";
+import { getApiPath, getAssetPath } from "@/utils/paths";
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
@@ -20,7 +21,7 @@ export default function Home() {
     const loadData = async () => {
       try {
         // Load items data
-        const itemsResponse = await fetch("/data.json");
+        const itemsResponse = await fetch(getApiPath("/data.json"));
         const itemsData: Item[] = await itemsResponse.json();
         setItems(itemsData);
 
@@ -181,7 +182,7 @@ export default function Home() {
       <div className="min-h-screen flex items-center font-mono justify-center">
         <div className="text-lg flex flex-row gap-2">
           <span>Loading items database... </span>
-          <Image src="/peon.webp" alt="Logo" width={32} height={32} />
+          <Image src={getAssetPath("/peon.webp")} alt="Logo" width={32} height={32} />
         </div>
       </div>
     );
@@ -215,7 +216,7 @@ export default function Home() {
             <p className="text-center text-green-400 mt-2 font-mono relative">
               from .dbc files & beta 3.5
             </p>
-            <Image src="/peon.webp" alt="Logo" width={32} height={32} />
+            <Image src={getAssetPath("/peon.webp")} alt="Logo" width={32} height={32} />
           </div>
         </div>
         <span className="text-center text-xs flex items-center justify-center text-gray-500 mt-2 font-mono">
