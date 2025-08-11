@@ -27,6 +27,7 @@ export default function Home() {
 
         // @ts-expect-error -- override global
         window.__EPOCH_DB = itemsData;
+        console.log("Loaded items from " + getApiPath("/data.json"));
 
         // Initialize MiniSearch - let's create it from the items data instead
         const ms = new MiniSearch({
@@ -53,7 +54,6 @@ export default function Home() {
               );
               if (Array.isArray(value)) {
                 const t = JSON.stringify(value);
-                console.log(t);
                 return t;
               }
             }

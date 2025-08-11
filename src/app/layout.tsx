@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Merriweather_Sans } from "next/font/google";
 import "./globals.css";
+import { getAssetPath } from "@/utils/paths";
 
 const merriweather = Merriweather_Sans({
   variable: "--font-merriwreather-sans",
@@ -12,9 +13,9 @@ export const metadata: Metadata = {
   description:
     "provides partial & very in-complete epoch item data for build 3466",
   icons: {
-    icon: "/peon.webp",
-    shortcut: "/peon.webp",
-    apple: "/peon.webp",
+    icon: getAssetPath("/peon.webp"),
+    shortcut: getAssetPath("/peon.webp"),
+    apple: getAssetPath("/peon.webp"),
   },
 };
 
