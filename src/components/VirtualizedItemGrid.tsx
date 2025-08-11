@@ -112,11 +112,11 @@ export default function VirtualizedItemGrid({
   if (items.length === 0) {
     return (
       <div
-        className="flex flex-col items-center justify-center text-center py-20 text-gray-500 dark:text-gray-400"
+        className="flex flex-col items-center justify-center text-center py-20 text-gray-400"
         style={{ height: dimensions.height }}
       >
         <svg
-          className="w-16 h-16 mb-4 text-gray-300 dark:text-gray-600"
+          className="w-16 h-16 mb-4 text-gray-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

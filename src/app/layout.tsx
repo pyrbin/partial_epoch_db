@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html className="dark" lang="en">
       <body className={`${merriweather.variable} antialiased font-main`}>
         {children}
       </body>

@@ -33,12 +33,12 @@ function FilterDropdown({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+        className="flex items-center gap-2 px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
       >
-        <span className="font-medium text-gray-700 dark:text-gray-300">
+        <span className="font-medium text-gray-300">
           {label}:
         </span>
-        <span className="text-gray-900 dark:text-gray-100">
+        <span className="text-gray-100">
           {value || placeholder}
         </span>
         <svg
@@ -57,14 +57,14 @@ function FilterDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto">
           <div className="py-1">
             <button
               onClick={() => handleSelect(undefined)}
-              className={`w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 ${
+              className={`w-full px-4 py-2 text-left hover:bg-gray-700 ${
                 !value
-                  ? "bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                  : "text-gray-900 dark:text-gray-100"
+                  ? "bg-blue-900 text-blue-300"
+                  : "text-gray-100"
               }`}
             >
               {placeholder}
@@ -73,10 +73,10 @@ function FilterDropdown({
               <button
                 key={option}
                 onClick={() => handleSelect(option)}
-                className={`w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                className={`w-full px-4 py-2 text-left hover:bg-gray-700 ${
                   value === option
-                    ? "bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                    : "text-gray-900 dark:text-gray-100"
+                    ? "bg-blue-900 text-blue-300"
+                    : "text-gray-100"
                 }`}
               >
                 {option}
@@ -202,9 +202,9 @@ export default function FilterBar({
                   e.target.checked ? true : undefined,
                 )
               }
-              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-gray-300">
               Has Set
             </span>
           </label>
@@ -219,9 +219,9 @@ export default function FilterBar({
                   e.target.checked ? true : undefined,
                 )
               }
-              className="w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
             />
-            <span className="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="cursor-pointer text-sm font-medium text-gray-300">
               Has Name
             </span>
           </label>
@@ -236,9 +236,9 @@ export default function FilterBar({
                   e.target.checked ? true : undefined,
                 )
               }
-              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-gray-300">
               Has Icon
             </span>
           </label>
@@ -252,9 +252,9 @@ export default function FilterBar({
                   e.target.checked ? true : undefined,
                 )
               }
-              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-gray-300">
               Has Spells
             </span>
           </label>
@@ -264,7 +264,7 @@ export default function FilterBar({
         {hasActiveFilters && (
           <button
             onClick={clearAllFilters}
-            className="px-3 py-1 cursor-pointer text-base font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 underline focus:outline-none"
+            className="px-3 py-1 cursor-pointer text-base font-bold text-red-400 hover:text-red-300 underline focus:outline-none"
           >
             ❌ Clear all filters
           </button>
