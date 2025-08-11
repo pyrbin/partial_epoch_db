@@ -35,12 +35,8 @@ function FilterDropdown({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
       >
-        <span className="font-medium text-gray-300">
-          {label}:
-        </span>
-        <span className="text-gray-100">
-          {value || placeholder}
-        </span>
+        <span className="font-medium text-gray-300">{label}:</span>
+        <span className="text-gray-100">{value || placeholder}</span>
         <svg
           className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
           fill="none"
@@ -62,9 +58,7 @@ function FilterDropdown({
             <button
               onClick={() => handleSelect(undefined)}
               className={`w-full px-4 py-2 text-left hover:bg-gray-700 ${
-                !value
-                  ? "bg-blue-900 text-blue-300"
-                  : "text-gray-100"
+                !value ? "bg-blue-900 text-blue-300" : "text-gray-100"
               }`}
             >
               {placeholder}
@@ -98,6 +92,16 @@ export default function FilterBar({
   const filterOptions = useMemo(() => {
     const classes = new Set<string>();
     const subclasses = new Set<string>();
+    const rarityOrder = [
+      "All",
+      "Poor",
+      "Common",
+      "Uncommon",
+      "Rare",
+      "Epic",
+      "Legendary",
+    ];
+
     const rarities = new Set<string>();
     const inventoryTypes = new Set<string>();
 
@@ -119,7 +123,9 @@ export default function FilterBar({
     return {
       classes: Array.from(classes).sort(),
       subclasses: Array.from(subclasses).sort(),
-      rarities: Array.from(rarities).sort(),
+      rarities: Array.from(rarities).sort(
+        (a, b) => rarityOrder.indexOf(a) - rarityOrder.indexOf(b),
+      ),
       inventoryTypes: Array.from(inventoryTypes).sort(),
     };
   }, [items]);
@@ -204,9 +210,7 @@ export default function FilterBar({
               }
               className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
             />
-            <span className="text-sm font-medium text-gray-300">
-              Has Set
-            </span>
+            <span className="text-sm font-medium text-gray-300">Has Set</span>
           </label>
 
           <label className="flex items-center gap-2 cursor-pointer">
@@ -238,9 +242,7 @@ export default function FilterBar({
               }
               className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
             />
-            <span className="text-sm font-medium text-gray-300">
-              Has Icon
-            </span>
+            <span className="text-sm font-medium text-gray-300">Has Icon</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
