@@ -7,7 +7,7 @@ mod models;
 mod parse;
 mod utils;
 
-use models::{DataminedBeta3Map, Item, Rarity};
+use models::{Item, ItemCacheData, Rarity};
 use parse::{collect_mpqs, parse_dbcs};
 use utils::OriginalItemChecker;
 
@@ -44,10 +44,10 @@ enum OutputFormat {
     Ron,
 }
 
-fn load_datamined_beta_3() -> Result<DataminedBeta3Map> {
-    let content = fs::read_to_string("data/parsed_items.json")?;
-    let parsed_items: DataminedBeta3Map = serde_json::from_str(&content)?;
-    Ok(parsed_items)
+fn load_item_cache_data() -> Result<ItemCacheData> {
+    let content = fs::read_to_string("data/item_cache.beta.3.5.json")?;
+    let item_cache: ItemCacheData = serde_json::from_str(&content)?;
+    Ok(item_cache)
 }
 
 #[tokio::main]
@@ -91,9 +91,8 @@ async fn main() -> Result<()> {
         parse_dbcs(&mpq_paths, &mut handlers)?;
     }
 
-    // Load parsed items data for supplementation
-    let datamined_items = load_datamined_beta_3().unwrap_or_default();
-    println!("Loaded {} datamined entries", datamined_items.len());
+    let item_cache = load_item_cache_data().unwrap_or_default();
+    println!("Loaded {} item cache entries", item_cache.len());
 
     let items: Vec<Item> = items
         .iter_rows()
@@ -141,7 +140,7 @@ async fn main() -> Result<()> {
             }
 
             // Supplement with data from parsed_items.json
-            if let Some(parsed_data) = datamined_items.get(&item.id.to_string()) {
+            if let Some(parsed_data) = item_cache.get(&item.id.to_string()) {
                 if !parsed_data.name.is_empty() {
                     item.name = parsed_data.name.clone();
                 }
@@ -211,15 +210,12 @@ async fn main() -> Result<()> {
     // Filter out items that exist in item_template.csv (keep only new items)
     let checker = OriginalItemChecker::new()?;
     let mut filtered_items = Vec::new();
-
     println!("Filtering {} items against CSV data...", items.len());
-
     for item in items {
         if checker.is_item_new(item.id) {
             filtered_items.push(item);
         }
     }
-
     println!(
         "Filtered to {} new items (not in CSV)",
         filtered_items.len()
@@ -228,7 +224,6 @@ async fn main() -> Result<()> {
     let mut items = filtered_items;
     items.sort_by_key(|i| i.id);
 
-    // Write output file
     let output_path = match args.format {
         OutputFormat::Json => {
             let path = format!("{}.json", args.output);

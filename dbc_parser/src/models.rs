@@ -213,7 +213,7 @@ impl From<i32> for Rarity {
 }
 
 #[derive(Deserialize, Clone, Debug)]
-pub struct PartialItemData {
+pub struct ItemCacheRow {
     pub name: String,
     #[serde(rename = "type")]
     pub rarity_type: Option<String>,
@@ -230,4 +230,4 @@ pub struct PartialItemData {
     pub hands: Option<String>,
 }
 
-pub type DataminedBeta3Map = HashMap<String, PartialItemData>;
+pub type ItemCacheData = HashMap<String, ItemCacheRow>;

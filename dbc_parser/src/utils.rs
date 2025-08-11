@@ -29,7 +29,7 @@ impl OriginalItemChecker {
 }
 
 fn load_csv_entries() -> Result<HashSet<i32>> {
-    let content = fs::read_to_string("data/item_template.csv")?;
+    let content = fs::read_to_string("data/wotlk_item_template.csv")?;
     let mut existing_entries = HashSet::new();
 
     let mut rdr = csv::Reader::from_reader(content.as_bytes());

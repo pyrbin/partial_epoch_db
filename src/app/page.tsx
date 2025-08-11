@@ -182,7 +182,13 @@ export default function Home() {
       <div className="min-h-screen flex items-center font-mono justify-center">
         <div className="text-lg flex flex-row gap-2">
           <span>Loading items database... </span>
-          <Image src={getAssetPath("/peon.webp")} alt="Logo" width={32} height={32} />
+          <Image
+            src={getAssetPath("/peon.webp")}
+            alt="Logo"
+            width={32}
+            className="animate-spin duration-200"
+            height={32}
+          />
         </div>
       </div>
     );
@@ -191,7 +197,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header/Banner */}
-      <header className=" text-main p-6 shadow-lg">
+      <header className=" text-main pt-4 px-2 shadow-lg scale-90">
         <div className="max-w-7xl mx-auto font-mono">
           <h1 className="text-3xl font-bold text-center flex items-center justify-center gap-2">
             PARTIAL
@@ -201,14 +207,14 @@ export default function Home() {
               width={200}
               height={32}
             />
-            - DB
-            <p className="text-center text-tooltip-requirement tracking-wide text-sm font-mono italic">
-              Build 3466
+            DB
+            <p className="text-center text-tooltip-requirement tracking-wide ml-2 text-sm font-mono italic">
+              Build 3466 (08.08.2025)
             </p>
           </h1>
           <div className="flex flex-row items-center justify-center gap-3">
             <p className="text-center text-blue-100 mt-2 font-mono">
-              tot. {items.length.toLocaleString()}{" "}
+              tot. {items.length}{" "}
               <span className="text-tooltip-requirement italic">*NEW*</span>{" "}
               items
             </p>
@@ -216,7 +222,12 @@ export default function Home() {
             <p className="text-center text-green-400 mt-2 font-mono relative">
               from .dbc files & beta 3.5
             </p>
-            <Image src={getAssetPath("/peon.webp")} alt="Logo" width={32} height={32} />
+            <Image
+              src={getAssetPath("/peon.webp")}
+              alt="Logo"
+              width={32}
+              height={32}
+            />
           </div>
         </div>
         <span className="text-center text-xs flex items-center justify-center text-gray-500 mt-2 font-mono">
@@ -225,7 +236,7 @@ export default function Home() {
       </header>
 
       {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto p-4 space-y-2">
+      <div className="max-w-7xl mx-auto p-2 space-y-2 scale-90">
         <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <FilterBar
           items={items}
@@ -235,9 +246,9 @@ export default function Home() {
       </div>
 
       {/* Results Grid */}
-      <div className="mx-auto p-4">
-        <div className="max-w-7xl font-mono mx-auto not-target:mb-4 text-sm text-gray-400 text-center">
-          Showing {filteredItems.length.toLocaleString()} items
+      <div className="mx-auto">
+        <div className="max-w-7xl font-mono mx-auto mb-2 text-xs text-gray-400 text-center">
+          Showing {filteredItems.length} items
         </div>
         <VirtualizedItemGrid items={filteredItems} />
       </div>
