@@ -239,7 +239,7 @@ export default function Home() {
       </header>
 
       {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto p-2 space-y-2 scale-90">
+      <div className="max-w-7xl z-[100] relative mx-auto p-2 space-y-2 scale-90">
         <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <FilterBar
           items={items}

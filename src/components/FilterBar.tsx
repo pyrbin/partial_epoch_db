@@ -13,6 +13,8 @@ interface FilterDropdownProps {
   options: string[];
   onChange: (value: string | undefined) => void;
   placeholder?: string;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
 function FilterDropdown({
@@ -21,18 +23,19 @@ function FilterDropdown({
   options,
   onChange,
   placeholder = "All",
+  isOpen,
+  onToggle,
 }: FilterDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (option: string | undefined) => {
     onChange(option);
-    setIsOpen(false);
+    onToggle(); // Close this dropdown
   };
 
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={onToggle}
         className="flex items-center gap-2 px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
       >
         <span className="font-medium text-gray-300">{label}:</span>
@@ -88,6 +91,7 @@ export default function FilterBar({
   filters,
   onFiltersChange,
 }: FilterBarProps) {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   // Extract unique values for filter options
   const filterOptions = useMemo(() => {
     const classes = new Set<string>();
@@ -156,15 +160,16 @@ export default function FilterBar({
   };
 
   const clearAllFilters = () => {
-    onFiltersChange({
-      has_icon: true,
-      has_name: true,
-    });
+    onFiltersChange({});
   };
 
   const hasActiveFilters = Object.values(filters).some(
     (value) => value !== undefined && value !== "",
   );
+
+  const handleDropdownToggle = (dropdownKey: string) => {
+    setOpenDropdown(openDropdown === dropdownKey ? null : dropdownKey);
+  };
 
   return (
     <div className="space-y-4">
@@ -200,6 +205,8 @@ export default function FilterBar({
             value={filters.class}
             options={filterOptions.classes}
             onChange={(value) => handleFilterChange("class", value)}
+            isOpen={openDropdown === "class"}
+            onToggle={() => handleDropdownToggle("class")}
           />
 
           <FilterDropdown
@@ -207,6 +214,8 @@ export default function FilterBar({
             value={filters.subclass}
             options={filterOptions.subclasses}
             onChange={(value) => handleFilterChange("subclass", value)}
+            isOpen={openDropdown === "subclass"}
+            onToggle={() => handleDropdownToggle("subclass")}
           />
 
           <FilterDropdown
@@ -214,6 +223,8 @@ export default function FilterBar({
             value={filters.rarity}
             options={filterOptions.rarities}
             onChange={(value) => handleFilterChange("rarity", value)}
+            isOpen={openDropdown === "rarity"}
+            onToggle={() => handleDropdownToggle("rarity")}
           />
 
           <FilterDropdown
@@ -221,6 +232,8 @@ export default function FilterBar({
             value={filters.inventory_type}
             options={filterOptions.inventoryTypes}
             onChange={(value) => handleFilterChange("inventory_type", value)}
+            isOpen={openDropdown === "inventory_type"}
+            onToggle={() => handleDropdownToggle("inventory_type")}
           />
         </div>
 
